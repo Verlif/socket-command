@@ -5,7 +5,7 @@ import idea.verlif.socket.core.server.holder.ClientHolder;
 /**
  * @author Verlif
  */
-public interface Command {
+public interface SocketCommand {
 
     /**
      * 指令Key

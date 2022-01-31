@@ -13,7 +13,7 @@ public class CommandParser implements SocketHandler {
 
     private static final String SPLIT = " ";
 
-    private final Map<String, Command> commandMap;
+    private final Map<String, SocketCommand> commandMap;
 
     public CommandParser() {
         commandMap = new HashMap<>();
@@ -22,7 +22,7 @@ public class CommandParser implements SocketHandler {
     @Override
     public void receive(ClientHolder.ClientHandler client, String message) {
         String[] ss = message.split(SPLIT, 2);
-        Command command = commandMap.get(ss[0]);
+        SocketCommand command = commandMap.get(ss[0]);
         if (command != null) {
             if (ss.length == 1) {
                 command.run(client, null);
@@ -37,9 +37,16 @@ public class CommandParser implements SocketHandler {
      *
      * @param command 指令对象
      */
-    public void addCommand(Command command) {
+    public void addCommand(SocketCommand command) {
         for (String key : command.keys()) {
             commandMap.put(key, command);
         }
+    }
+
+    /**
+     * 清空指令
+     */
+    public void clear() {
+        commandMap.clear();
     }
 }
