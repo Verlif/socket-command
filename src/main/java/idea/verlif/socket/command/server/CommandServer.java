@@ -58,6 +58,24 @@ public class CommandServer extends Server {
     }
 
     /**
+     * 移除指令
+     *
+     * @param key 指令Key
+     */
+    public void removeCommand(String key) {
+        parser.removeCommand(key);
+    }
+
+    /**
+     * 移除指令
+     *
+     * @param command 需要移除的指令
+     */
+    public void removeCommand(SocketCommand command) {
+        parser.dropCommand(command);
+    }
+
+    /**
      * 通过paths参数来重载所有路径中的jar文件中的指令
      */
     public void reload() throws InvocationTargetException, InstantiationException, IllegalAccessException {

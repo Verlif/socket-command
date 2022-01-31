@@ -18,7 +18,7 @@
         <dependency>
             <groupId>com.github.Verlif</groupId>
             <artifactId>socket-core</artifactId>
-            <version>59c1562881</version>
+            <version>0.2</version>
         </dependency>
         <!-- Jar加载器 -->
         <dependency>

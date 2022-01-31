@@ -1,5 +1,6 @@
 package idea.verlif.socket.command;
 
+import idea.verlif.socket.command.impl.DefaultEcho;
 import idea.verlif.socket.core.server.SocketHandler;
 import idea.verlif.socket.core.server.holder.ClientHolder;
 
@@ -13,10 +14,12 @@ public class CommandParser implements SocketHandler {
 
     private static final String SPLIT = " ";
 
+    private SocketHandler defaultHandler;
     private final Map<String, SocketCommand> commandMap;
 
     public CommandParser() {
         commandMap = new HashMap<>();
+        defaultHandler = new DefaultEcho();
     }
 
     @Override
@@ -29,6 +32,20 @@ public class CommandParser implements SocketHandler {
             } else {
                 command.run(client, ss[1]);
             }
+        } else if (defaultHandler != null) {
+            defaultHandler.receive(client, message);
+        }
+    }
+
+    /**
+     * 设定默认指令反馈。<br/>
+     * 当指令库不存在客户端指令时，则会调用此handler。
+     *
+     * @param defaultHandler 指令反馈回调
+     */
+    public void setDefaultHandler(SocketHandler defaultHandler) {
+        if (defaultHandler != null) {
+            this.defaultHandler = defaultHandler;
         }
     }
 
@@ -40,6 +57,16 @@ public class CommandParser implements SocketHandler {
     public void addCommand(SocketCommand command) {
         for (String key : command.keys()) {
             commandMap.put(key, command);
+        }
+    }
+
+    public void removeCommand(String key) {
+        commandMap.remove(key);
+    }
+
+    public void dropCommand(SocketCommand command) {
+        for (String key : command.keys()) {
+            commandMap.remove(key);
         }
     }
 
