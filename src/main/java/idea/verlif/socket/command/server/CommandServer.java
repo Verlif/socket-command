@@ -85,6 +85,13 @@ public class CommandServer extends Server {
     }
 
     /**
+     * 获取指令解析器
+     */
+    public CommandParser getParser() {
+        return parser;
+    }
+
+    /**
      * 清空指令
      */
     public void clearCommand() {

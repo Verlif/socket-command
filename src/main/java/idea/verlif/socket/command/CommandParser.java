@@ -6,6 +6,7 @@ import idea.verlif.socket.core.server.holder.ClientHolder;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Verlif
@@ -68,6 +69,13 @@ public class CommandParser implements SocketHandler {
         for (String key : command.keys()) {
             commandMap.remove(key);
         }
+    }
+
+    /**
+     * 获取所有的指令key
+     */
+    public Set<String> keys() {
+        return commandMap.keySet();
     }
 
     /**
