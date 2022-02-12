@@ -52,7 +52,7 @@ public class CommandServer extends Server {
      * @param path jar文件路径或是文件夹路径
      */
     public void loadCommand(String path) throws InvocationTargetException, InstantiationException, IllegalAccessException, IOException {
-        JarLoader loader = new JarLoader(path);
+        JarLoader loader = new JarLoader(path, config.getFileFilter());
         List<SocketCommand> commands = new ArrayList<>();
         try {
             commands.addAll(loader.getInstances(SocketCommand.class));

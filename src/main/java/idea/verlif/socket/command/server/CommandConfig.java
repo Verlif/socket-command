@@ -1,5 +1,6 @@
 package idea.verlif.socket.command.server;
 
+import idea.verlif.loader.jar.config.FileFilter;
 import idea.verlif.socket.core.server.ServerConfig;
 
 import java.util.Arrays;
@@ -17,9 +18,9 @@ public class CommandConfig extends ServerConfig {
     private final Set<String> paths;
 
     /**
-     * 服务端是否要求数据重编码
+     * 指令文件过滤器
      */
-    private boolean encode;
+    private FileFilter fileFilter;
 
     public CommandConfig() {
         paths = new HashSet<>();
@@ -38,17 +39,22 @@ public class CommandConfig extends ServerConfig {
         this.paths.addAll(Arrays.asList(path));
     }
 
+    public FileFilter getFileFilter() {
+        return fileFilter;
+    }
+
+    public void setFileFilter(FileFilter fileFilter) {
+        this.fileFilter = fileFilter;
+    }
+
     public CommandConfig path(String... path) {
         addPath(path);
         return this;
     }
 
-    public boolean isEncode() {
-        return encode;
-    }
-
-    public void setEncode(boolean encode) {
-        this.encode = encode;
+    public CommandConfig filter(FileFilter filter) {
+        this.fileFilter = filter;
+        return this;
     }
 
     @Override

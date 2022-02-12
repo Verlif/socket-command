@@ -60,7 +60,7 @@ Socket指令在使用时，可以加载`jar文件`，也可以加载`SocketComma
 >        <dependency>
 >            <groupId>com.github.Verlif</groupId>
 >            <artifactId>socket-command</artifactId>
->            <version>alpha-0.3</version>
+>            <version>alpha-0.4</version>
 >        </dependency>
 >    </dependencies>
 > ```
@@ -68,7 +68,7 @@ Socket指令在使用时，可以加载`jar文件`，也可以加载`SocketComma
 > Gradle
 > ```text
 > dependencies {
->   implementation 'com.github.Verlif:socket-command:alpha-0.3'
+>   implementation 'com.github.Verlif:socket-command:alpha-0.4'
 > }
 > ```
 
@@ -77,10 +77,18 @@ Socket指令在使用时，可以加载`jar文件`，也可以加载`SocketComma
 这里有一个这样的指令在指令包`F:\command\testCommand.jar`中:
 
 ```java
-public class PlusCommand implements SocketCommand {
+public class PlusCommand implements SocketCommand<PlusConfig> {
+    
+    private PlusConfig config;
+    
     @Override
     public String[] keys() {
         return new String[]{"plus"};
+    }
+
+    @Override
+    public void onLoad(PlusConfig config) {
+        this.config = config;
     }
 
     /**
@@ -90,13 +98,48 @@ public class PlusCommand implements SocketCommand {
     public void run(ClientHolder.ClientHandler clientHandler, String s) {
         String[] ss = s.split(" ");
         if (ss.length > 1) {
-            clientHandler.sendMessage(String.valueOf(Integer.parseInt(ss[0]) + Integer.parseInt(ss[1])));
+            clientHandler.sendMessage(config.prefix + String.valueOf(Integer.parseInt(ss[0]) + Integer.parseInt(ss[1])));
         } else {
-            clientHandler.sendMessage(s);
+            clientHandler.sendMessage(config.prefix + s);
         }
     }
 }
 ```
+
+其中`PlusConfig`是实现了`ConfigAdapter`接口的配置，服务端会自动加载并生成配置文件。
+
+```java
+public class PlusConfig implements ConfigAdapter {
+
+    private String prefix = "result = ";
+
+    /**
+     * 配置文件唯一Key
+     *
+     * @return 用于生成配置文件名
+     */
+    @Override
+    public String key() {
+        return "plus";
+    }
+
+    public String getPrefix() {
+        return prefix;
+    }
+
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
+    }
+}
+```
+
+在第一次加载`PlusCommand`指令时，会根据其配置类自动生成配置文件`config\plus.json`：
+
+```json
+{"prefix": "result = "}
+```
+
+可以通过更改配置文件来修改指令的配置（修改后需要重启服务端）
 
 在指令服务器代码中使用以下方式添加上面的指令包：
 
@@ -122,5 +165,13 @@ plus 1 2
 在客户端与服务端通信后，客户端会收到以下信息：
 
 ```text
-3
+result = 3
 ```
+
+## 指令包加载图片演示
+
+![这是图片](description/socket-command-test.png "指令包加载及客户端运行指令")  
+
+上方的图片中，加载了`F:\Download`目录，则指令就会从其下所有的jar包中寻找可用的指令。
+其中除了`socket-command-cmd-1.0.jar`包含有指令之外，其他的都是`minecraft`的模组文件，共计105个文件。
+在控制台可以看出，服务端加载指令约2分钟后（文件数量越多，搜寻的时间越长）。  

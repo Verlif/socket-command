@@ -19,11 +19,6 @@ public class ConfigService {
 
     private File configDir;
 
-    /**
-     * 是否要求客户端数据重编码
-     */
-    private boolean encode;
-
     public ConfigService() {
         factory = new MappingJsonFactory();
     }
@@ -67,13 +62,5 @@ public class ConfigService {
 
     private String buildConfigFilename(ConfigAdapter adapter) {
         return adapter.key() + ".json";
-    }
-
-    public boolean isEncode() {
-        return encode;
-    }
-
-    public void setEncode(boolean encode) {
-        this.encode = encode;
     }
 }
