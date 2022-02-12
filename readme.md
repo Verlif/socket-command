@@ -19,7 +19,7 @@ Socket指令在使用时，可以加载`jar文件`，也可以加载`SocketComma
     // 从指令集中移除 key 为 "plus" 的指令
     server.removeCommand("plus");
     // 重新加载指令集路径中的所有指令包
-    server.reset();
+    server.reload();
 ```
 
 指令包指的是包含有`SocketCommand`实现类的`jar包`。  
@@ -60,7 +60,7 @@ Socket指令在使用时，可以加载`jar文件`，也可以加载`SocketComma
 >        <dependency>
 >            <groupId>com.github.Verlif</groupId>
 >            <artifactId>socket-command</artifactId>
->            <version>alpha-0.2</version>
+>            <version>alpha-0.3</version>
 >        </dependency>
 >    </dependencies>
 > ```
@@ -68,7 +68,7 @@ Socket指令在使用时，可以加载`jar文件`，也可以加载`SocketComma
 > Gradle
 > ```text
 > dependencies {
->   implementation 'com.github.Verlif:socket-command:alpha-0.2'
+>   implementation 'com.github.Verlif:socket-command:alpha-0.3'
 > }
 > ```
 

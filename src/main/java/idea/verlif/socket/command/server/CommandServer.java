@@ -3,11 +3,18 @@ package idea.verlif.socket.command.server;
 import idea.verlif.loader.jar.JarLoader;
 import idea.verlif.socket.command.CommandParser;
 import idea.verlif.socket.command.SocketCommand;
+import idea.verlif.socket.command.config.ConfigAdapter;
+import idea.verlif.socket.command.config.ConfigService;
 import idea.verlif.socket.core.server.Server;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Verlif
@@ -16,6 +23,7 @@ public class CommandServer extends Server {
 
     private final CommandConfig config;
     private final CommandParser parser;
+    private final ConfigService configService;
 
     public CommandServer(CommandConfig config) {
         super(config);
@@ -23,11 +31,14 @@ public class CommandServer extends Server {
 
         parser = new CommandParser();
         config.handler(parser);
+
+        this.configService = new ConfigService();
     }
 
     @Override
     public void init() throws IOException {
         super.init();
+        configService.init();
         try {
             reload();
         } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
@@ -36,15 +47,55 @@ public class CommandServer extends Server {
     }
 
     /**
-     * 读取jar文件中的指令
+     * 读取jar文件中的指令。
      *
      * @param path jar文件路径或是文件夹路径
      */
-    public void loadCommand(String path) throws InvocationTargetException, InstantiationException, IllegalAccessException {
+    public void loadCommand(String path) throws InvocationTargetException, InstantiationException, IllegalAccessException, IOException {
         JarLoader loader = new JarLoader(path);
-        List<SocketCommand> commands = loader.getInstances(SocketCommand.class);
+        List<SocketCommand> commands = new ArrayList<>();
+        try {
+            commands.addAll(loader.getInstances(SocketCommand.class));
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
         for (SocketCommand socketCommand : commands) {
-            parser.addCommand(socketCommand);
+            Class<ConfigAdapter> configCla = (Class<ConfigAdapter>) getAdapterClass(socketCommand);
+            List<ConfigAdapter> adapters = loader.getInstances(configCla);
+            if (adapters.size() > 0) {
+                ConfigAdapter adapter = configService.getConfig(adapters.get(0));
+                addCommand(socketCommand, adapter);
+            } else {
+                addCommand(socketCommand);
+            }
+        }
+    }
+
+    /**
+     * 获取指令的对应配置类
+     *
+     * @param command 指令
+     */
+    public static Class<?> getAdapterClass(SocketCommand<?> command) {
+        Type[] types = command.getClass().getGenericInterfaces();
+        if (types[0] instanceof ParameterizedType) {
+            ParameterizedType parameterizedType = (ParameterizedType) types[0];
+            Type type = parameterizedType.getActualTypeArguments()[0];
+            return checkType(type, 0);
+        } else {
+            return null;
+        }
+    }
+
+    private static Class<?> checkType(Type type, int index) {
+        if (type instanceof Class<?>) {
+            return (Class<?>) type;
+        } else if (type instanceof ParameterizedType) {
+            ParameterizedType pt = (ParameterizedType) type;
+            Type t = pt.getActualTypeArguments()[index];
+            return checkType(t, index);
+        } else {
+            return null;
         }
     }
 
@@ -53,8 +104,34 @@ public class CommandServer extends Server {
      *
      * @param command 指令对象
      */
-    public void addCommand(SocketCommand command) {
+    public void addCommand(SocketCommand<?> command) {
+        addCommand(command, null);
+    }
+
+    /**
+     * 添加带配置的指令
+     *
+     * @param command 指令对象
+     * @param adapter 指令配置
+     * @param <T>     指令配置类
+     */
+    public <T extends ConfigAdapter> void addCommand(SocketCommand<T> command, T adapter) {
+        // 销毁会被替换的指令
+        Set<SocketCommand<?>> scs = new HashSet<>();
+        for (String key : command.keys()) {
+            SocketCommand<?> sc = parser.getCommand(key);
+            if (sc != null) {
+                scs.add(sc);
+            }
+        }
+        command.onLoad(adapter);
         parser.addCommand(command);
+        for (SocketCommand<?> sc : scs) {
+            // 当解析器中不存在可能被替换的指令时，摧毁指令
+            if (!parser.contain(sc)) {
+                sc.onDestroy();
+            }
+        }
     }
 
     /**
@@ -63,6 +140,10 @@ public class CommandServer extends Server {
      * @param key 指令Key
      */
     public void removeCommand(String key) {
+        SocketCommand<?> command = parser.getCommand(key);
+        if (command != null) {
+            command.onDestroy();
+        }
         parser.removeCommand(key);
     }
 
@@ -72,13 +153,20 @@ public class CommandServer extends Server {
      * @param command 需要移除的指令
      */
     public void removeCommand(SocketCommand command) {
+        for (String key : command.keys()) {
+            SocketCommand<?> sc = parser.getCommand(key);
+            if (sc == command) {
+                sc.onDestroy();
+                break;
+            }
+        }
         parser.dropCommand(command);
     }
 
     /**
      * 通过paths参数来重载所有路径中的jar文件中的指令
      */
-    public void reload() throws InvocationTargetException, InstantiationException, IllegalAccessException {
+    public void reload() throws IOException, InvocationTargetException, InstantiationException, IllegalAccessException {
         for (String path : config.getPaths()) {
             loadCommand(path);
         }
@@ -96,6 +184,16 @@ public class CommandServer extends Server {
      */
     public void clearCommand() {
         config.getPaths().clear();
+        Set<SocketCommand<?>> scs = new HashSet<>();
+        for (String key : parser.keys()) {
+            SocketCommand<?> command = parser.getCommand(key);
+            if (command != null) {
+                scs.add(command);
+            }
+        }
         parser.clear();
+        for (SocketCommand<?> command : scs) {
+            command.onDestroy();
+        }
     }
 }

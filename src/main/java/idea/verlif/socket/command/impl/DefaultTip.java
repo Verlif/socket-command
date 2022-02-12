@@ -8,10 +8,10 @@ import idea.verlif.socket.core.server.holder.ClientHolder;
  *
  * @author Verlif
  */
-public class DefaultEcho implements SocketHandler {
+public class DefaultTip implements SocketHandler {
 
     @Override
     public void receive(ClientHolder.ClientHandler clientHandler, String s) {
-        clientHandler.sendMessage(s);
+        clientHandler.sendMessage("Unknown input: " + s);
     }
 }

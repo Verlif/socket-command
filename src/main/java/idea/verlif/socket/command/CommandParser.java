@@ -1,6 +1,6 @@
 package idea.verlif.socket.command;
 
-import idea.verlif.socket.command.impl.DefaultEcho;
+import idea.verlif.socket.command.impl.DefaultTip;
 import idea.verlif.socket.core.server.SocketHandler;
 import idea.verlif.socket.core.server.holder.ClientHolder;
 
@@ -16,17 +16,17 @@ public class CommandParser implements SocketHandler {
     private static final String SPLIT = " ";
 
     private SocketHandler defaultHandler;
-    private final Map<String, SocketCommand> commandMap;
+    private final Map<String, SocketCommand<?>> commandMap;
 
     public CommandParser() {
         commandMap = new HashMap<>();
-        defaultHandler = new DefaultEcho();
+        defaultHandler = new DefaultTip();
     }
 
     @Override
     public void receive(ClientHolder.ClientHandler client, String message) {
         String[] ss = message.split(SPLIT, 2);
-        SocketCommand command = commandMap.get(ss[0]);
+        SocketCommand<?> command = commandMap.get(ss[0]);
         if (command != null) {
             if (ss.length == 1) {
                 command.run(client, null);
@@ -55,19 +55,27 @@ public class CommandParser implements SocketHandler {
      *
      * @param command 指令对象
      */
-    public void addCommand(SocketCommand command) {
+    public void addCommand(SocketCommand<?> command) {
         for (String key : command.keys()) {
             commandMap.put(key, command);
         }
+    }
+
+    public SocketCommand<?> getCommand(String key) {
+        return commandMap.get(key);
+    }
+
+    public boolean contain(SocketCommand<?> command) {
+        return commandMap.containsValue(command);
     }
 
     public void removeCommand(String key) {
         commandMap.remove(key);
     }
 
-    public void dropCommand(SocketCommand command) {
+    public void dropCommand(SocketCommand<?> command) {
         for (String key : command.keys()) {
-            commandMap.remove(key);
+            commandMap.remove(key, command);
         }
     }
 

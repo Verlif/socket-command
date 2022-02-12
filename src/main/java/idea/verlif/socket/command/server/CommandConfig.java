@@ -1,14 +1,9 @@
 package idea.verlif.socket.command.server;
 
-import idea.verlif.loader.jar.JarLoader;
-import idea.verlif.socket.command.CommandParser;
-import idea.verlif.socket.command.SocketCommand;
 import idea.verlif.socket.core.server.ServerConfig;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -20,6 +15,11 @@ public class CommandConfig extends ServerConfig {
      * 指令加载路径
      */
     private final Set<String> paths;
+
+    /**
+     * 服务端是否要求数据重编码
+     */
+    private boolean encode;
 
     public CommandConfig() {
         paths = new HashSet<>();
@@ -41,5 +41,20 @@ public class CommandConfig extends ServerConfig {
     public CommandConfig path(String... path) {
         addPath(path);
         return this;
+    }
+
+    public boolean isEncode() {
+        return encode;
+    }
+
+    public void setEncode(boolean encode) {
+        this.encode = encode;
+    }
+
+    @Override
+    public String toString() {
+        return "CommandConfig{" +
+                "paths=" + Arrays.toString(paths.toArray()) +
+                '}';
     }
 }
