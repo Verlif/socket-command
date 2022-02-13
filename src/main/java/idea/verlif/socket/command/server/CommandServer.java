@@ -54,20 +54,32 @@ public class CommandServer extends Server {
     public void loadCommand(String path) throws InvocationTargetException, InstantiationException, IllegalAccessException, IOException {
         JarLoader loader = new JarLoader(path, config.getFileFilter());
         List<SocketCommand> commands = new ArrayList<>();
+        List<ConfigAdapter> adapters = new ArrayList<>();
         try {
             commands.addAll(loader.getInstances(SocketCommand.class));
+            adapters.addAll(loader.getInstances(ConfigAdapter.class));
         } catch (Throwable e) {
             e.printStackTrace();
         }
+        COMMAND:
         for (SocketCommand socketCommand : commands) {
             Class<ConfigAdapter> configCla = (Class<ConfigAdapter>) getAdapterClass(socketCommand);
-            List<ConfigAdapter> adapters = loader.getInstances(configCla);
-            if (adapters.size() > 0) {
-                ConfigAdapter adapter = configService.getConfig(adapters.get(0));
-                addCommand(socketCommand, adapter);
-            } else {
-                addCommand(socketCommand);
+            if (configCla != null) {
+                for (ConfigAdapter adapter : adapters) {
+                    Class<?> adapterCla = adapter.getClass();
+                    try {
+                        adapterCla = configCla.getClassLoader().loadClass(adapterCla.getName());
+                        if (configCla.isAssignableFrom(adapterCla)) {
+                            ConfigAdapter realAdapter = configService.getConfig((ConfigAdapter) configCla.getClassLoader().loadClass(adapter.getClass().getName()).newInstance());
+                            addCommand(socketCommand, realAdapter);
+                            continue COMMAND;
+                        }
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
+            addCommand(socketCommand);
         }
     }
 

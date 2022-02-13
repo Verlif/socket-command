@@ -6,7 +6,7 @@
 
     <groupId>idea.verlif</groupId>
     <artifactId>socket-socketCommand</artifactId>
-    <version>alpha-0.4</version>
+    <version>alpha-0.5</version>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -42,9 +42,6 @@
             <artifactId>jackson-annotations</artifactId>
             <version>2.13.1</version>
         </dependency>
-
-
-
     </dependencies>
 
     <repositories>

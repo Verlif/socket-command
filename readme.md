@@ -1,7 +1,12 @@
 # CommandSocket
 
 Socket指令交互组件  
-`socket-core`与`loader-jar`的组合组件。通过类似于加载模组的方式，通过加载文件的方式来加载指令，然后通过socket的方式来执行指令。
+基于 [socket-core](https://github.com/socket-core) 与 [loader-jar](https://github.com/loader-jar) 的组合组件。
+通过类似于加载模组的方式，通过加载jar文件的方式来加载指令，然后通过socket的方式来执行指令。
+
+* 一个服务端可以连接任意数量客户端
+* 开放式指令包，5分钟完成指令包创建
+* 方便拓展与修改，定制自己的指令流程
 
 ## 使用
 
@@ -28,6 +33,8 @@ Socket指令在使用时，可以加载`jar文件`，也可以加载`SocketComma
 2. 添加本组件作为依赖
 3. 实现`SocketCommand`接口
 4. 打包成jar包
+
+详细方式请访问 [如何创建指令包](instructions/如何创建指令包.md)
 
 ## 添加
 
@@ -60,7 +67,7 @@ Socket指令在使用时，可以加载`jar文件`，也可以加载`SocketComma
 >        <dependency>
 >            <groupId>com.github.Verlif</groupId>
 >            <artifactId>socket-command</artifactId>
->            <version>alpha-0.4</version>
+>            <version>alpha-0.5</version>
 >        </dependency>
 >    </dependencies>
 > ```
@@ -68,7 +75,7 @@ Socket指令在使用时，可以加载`jar文件`，也可以加载`SocketComma
 > Gradle
 > ```text
 > dependencies {
->   implementation 'com.github.Verlif:socket-command:alpha-0.4'
+>   implementation 'com.github.Verlif:socket-command:alpha-0.5'
 > }
 > ```
 
