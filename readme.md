@@ -8,6 +8,8 @@ Socket指令交互组件
 * 开放式指令包，5分钟完成指令包创建
 * 方便拓展与修改，定制自己的指令流程
 
+从这里可以找到 [指令包仓库](https://github.com/topics/socket-command-extend)
+
 ## 使用
 
 Socket指令在使用时，可以加载`jar文件`，也可以加载`SocketCommand`对象。
