@@ -10,6 +10,8 @@ Socket指令交互组件
 
 从这里可以找到 [指令包仓库](https://github.com/topics/socket-command-extend)
 
+------
+
 ## 使用
 
 Socket指令在使用时，可以加载`jar文件`，也可以加载`SocketCommand`对象。
@@ -29,6 +31,43 @@ Socket指令在使用时，可以加载`jar文件`，也可以加载`SocketComma
     server.reload();
 ```
 
+------
+
+## 内置指令
+
+内置指令默认只能在代码中添加，不能通过jar包的方式加载。
+
+本组件提供了`KeyServer`服务端，这个服务端继承于`CommandServer`，并拓展了内置指令`KeyCommand`。
+可以通过以下方式来添加内置指令：
+
+```java
+    // 与CommandServer使用方式相同，只是多了addCommand方法，并会优先识别内置指令。
+    KeyServer keyServer = new KeyServer();
+    keyServer.addCommand(keyCommand);
+```
+
+配套的客户端是`KeyClient`，此客户端继承于`Client`，并同样拓展了内置指令`KeyCommand`。
+与服务端一样，可以通过以下方法添加内置指令：
+
+```java
+    // 与CommandServer使用方式相同，只是多了addCommand方法，并会优先识别内置指令。
+    KeyClient keyClient = new KeyClient();
+    keyClient.addCommand(keyCommand);
+```
+
+发送内置指令时可以使用以下方式发送：
+
+```java
+    // 客户端可以直接发送
+    keyClient.sendMessage(keyCommand.buildKey());
+    // 服务器可以通过ClientHandler来发送
+    clientHandler.sendMessage(keyCommand.buildKey());
+```
+
+------
+
+## 指令包
+
 指令包指的是包含有`SocketCommand`实现类的`jar包`。  
 指令包的制作：
 1. 新建maven项目
@@ -37,6 +76,8 @@ Socket指令在使用时，可以加载`jar文件`，也可以加载`SocketComma
 4. 打包成jar包
 
 详细方式请访问 [如何创建指令包](instructions/如何创建指令包.md)
+
+------
 
 ## 添加
 
@@ -69,7 +110,7 @@ Socket指令在使用时，可以加载`jar文件`，也可以加载`SocketComma
 >        <dependency>
 >            <groupId>com.github.Verlif</groupId>
 >            <artifactId>socket-command</artifactId>
->            <version>alpha-0.5</version>
+>            <version>alpha-0.6</version>
 >        </dependency>
 >    </dependencies>
 > ```
@@ -77,9 +118,11 @@ Socket指令在使用时，可以加载`jar文件`，也可以加载`SocketComma
 > Gradle
 > ```text
 > dependencies {
->   implementation 'com.github.Verlif:socket-command:alpha-0.5'
+>   implementation 'com.github.Verlif:socket-command:alpha-0.6'
 > }
 > ```
+
+------
 
 ## 示例
 
@@ -176,6 +219,8 @@ plus 1 2
 ```text
 result = 3
 ```
+
+------
 
 ## 指令包加载图片演示
 

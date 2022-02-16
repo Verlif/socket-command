@@ -21,9 +21,9 @@ import java.util.Set;
  */
 public class CommandServer extends Server {
 
-    private final CommandConfig config;
-    private final CommandParser parser;
-    private final ConfigService configService;
+    protected final CommandConfig config;
+    protected final CommandParser parser;
+    protected final ConfigService configService;
 
     public CommandServer(CommandConfig config) {
         super(config);
