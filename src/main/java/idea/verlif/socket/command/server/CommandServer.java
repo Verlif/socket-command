@@ -5,6 +5,7 @@ import idea.verlif.socket.command.CommandParser;
 import idea.verlif.socket.command.SocketCommand;
 import idea.verlif.socket.command.config.ConfigAdapter;
 import idea.verlif.socket.command.config.ConfigService;
+import idea.verlif.socket.command.server.inter.ConnectedChain;
 import idea.verlif.socket.core.server.Server;
 
 import java.io.IOException;
@@ -44,6 +45,15 @@ public class CommandServer extends Server {
         } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 添加连接处理器
+     *
+     * @param connectedChain 客户端连接时回调接口
+     */
+    public void addOnConnectedHandler(ConnectedChain connectedChain) {
+        parser.addOnConnectedHandler(connectedChain);
     }
 
     /**
