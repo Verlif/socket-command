@@ -1,13 +1,11 @@
 package idea.verlif.socket.command.config;
 
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.MappingJsonFactory;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 
 /**
@@ -15,12 +13,12 @@ import java.io.IOException;
  */
 public class ConfigService {
 
-    private final JsonFactory factory;
+    private final ObjectMapper objectMapper;
 
     private File configDir;
 
     public ConfigService() {
-        factory = new MappingJsonFactory();
+        objectMapper = new ObjectMapper();
     }
 
     /**
@@ -49,13 +47,12 @@ public class ConfigService {
         }
         File configFile = new File(configDir, buildConfigFilename(adapter));
         if (configFile.exists()) {
-            try (JsonParser parser = factory.createParser(configFile)) {
+            try (JsonParser parser = objectMapper.createParser(configFile)) {
                 return (T) parser.readValueAs(adapter.getClass());
             }
         } else {
-            JsonGenerator generator = factory.createGenerator(new FileOutputStream(configFile));
-            generator.writePOJO(adapter);
-            generator.close();
+            ObjectWriter writer = objectMapper.writerWithDefaultPrettyPrinter();
+            writer.writeValues(configFile).write(adapter).flush();
             return adapter;
         }
     }

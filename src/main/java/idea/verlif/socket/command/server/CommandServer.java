@@ -1,12 +1,11 @@
 package idea.verlif.socket.command.server;
 
 import idea.verlif.loader.jar.JarLoader;
-import idea.verlif.socket.command.CommandParser;
 import idea.verlif.socket.command.SocketCommand;
 import idea.verlif.socket.command.config.ConfigAdapter;
 import idea.verlif.socket.command.config.ConfigService;
-import idea.verlif.socket.command.server.inter.ConnectedChain;
 import idea.verlif.socket.core.server.Server;
+import idea.verlif.socket.core.server.listener.ConnectedListener;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -24,6 +23,7 @@ public class CommandServer extends Server {
 
     protected final CommandConfig config;
     protected final CommandParser parser;
+    protected final ConnectedListenerChainer check;
     protected final ConfigService configService;
 
     public CommandServer(CommandConfig config) {
@@ -31,7 +31,8 @@ public class CommandServer extends Server {
         this.config = config;
 
         parser = new CommandParser();
-        config.handler(parser);
+        check = new ConnectedListenerChainer();
+        config.handler(parser).connectListener(check);
 
         this.configService = new ConfigService();
     }
@@ -52,8 +53,8 @@ public class CommandServer extends Server {
      *
      * @param connectedChain 客户端连接时回调接口
      */
-    public void addOnConnectedHandler(ConnectedChain connectedChain) {
-        parser.addOnConnectedHandler(connectedChain);
+    public void addOnConnectedHandler(ConnectedListener connectedChain) {
+        check.addOnConnectedHandler(connectedChain);
     }
 
     /**

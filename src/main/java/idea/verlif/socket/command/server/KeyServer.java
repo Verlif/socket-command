@@ -39,11 +39,6 @@ public class KeyServer extends CommandServer {
         ServerKeyHandler keyHandler = new ServerKeyHandler() {
 
             @Override
-            public void onClientConnected(ClientHolder.ClientHandler handler) {
-                socketHandler.onClientConnected(handler);
-            }
-
-            @Override
             public void defaultReceive(ClientHolder.ClientHandler client, String message) {
                 socketHandler.receive(client, message);
             }

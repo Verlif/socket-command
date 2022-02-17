@@ -1,11 +1,13 @@
-package idea.verlif.socket.command;
+package idea.verlif.socket.command.server;
 
+import idea.verlif.socket.command.SocketCommand;
 import idea.verlif.socket.command.impl.DefaultTip;
-import idea.verlif.socket.command.server.inter.ConnectedChain;
 import idea.verlif.socket.core.server.SocketHandler;
 import idea.verlif.socket.core.server.holder.ClientHolder;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Verlif
@@ -16,19 +18,10 @@ public class CommandParser implements SocketHandler {
 
     private SocketHandler defaultHandler;
     private final Map<String, SocketCommand<?>> commandMap;
-    protected final List<ConnectedChain> connectedChains;
 
     public CommandParser() {
         this.commandMap = new HashMap<>();
         this.defaultHandler = new DefaultTip();
-        this.connectedChains = new ArrayList<>();
-    }
-
-    @Override
-    public void onClientConnected(ClientHolder.ClientHandler handler) {
-        for (ConnectedChain chain : connectedChains) {
-            chain.onClientConnected(handler);
-        }
     }
 
     @Override
@@ -44,22 +37,6 @@ public class CommandParser implements SocketHandler {
         } else if (defaultHandler != null) {
             defaultHandler.receive(client, message);
         }
-    }
-
-    /**
-     * 添加连接处理器
-     *
-     * @param connectedChain 客户端连接时回调接口
-     */
-    public void addOnConnectedHandler(ConnectedChain connectedChain) {
-        connectedChains.add(connectedChain);
-    }
-
-    /**
-     * 清空连接处理器链
-     */
-    public void clearConnectedChain() {
-        connectedChains.clear();
     }
 
     /**
