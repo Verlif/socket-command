@@ -5,6 +5,7 @@ import idea.verlif.socket.command.impl.DefaultTip;
 import idea.verlif.socket.core.server.SocketHandler;
 import idea.verlif.socket.core.server.holder.ClientHolder;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -19,23 +20,34 @@ public class CommandParser implements SocketHandler {
     private SocketHandler defaultHandler;
     private final Map<String, SocketCommand<?>> commandMap;
 
+    /**
+     * 指令别名Map表
+     */
+    private final Map<String, String> aliasMap;
+
     public CommandParser() {
         this.commandMap = new HashMap<>();
         this.defaultHandler = new DefaultTip();
+        this.aliasMap = new HashMap<>();
     }
 
     @Override
     public void receive(ClientHolder.ClientHandler client, String message) {
         String[] ss = message.split(SPLIT, 2);
-        SocketCommand<?> command = commandMap.get(ss[0]);
-        if (command != null) {
-            if (ss.length == 1) {
-                command.run(client, null);
-            } else {
-                command.run(client, ss[1]);
+        String key = ss[0];
+        String param = ss.length == 1 ? "" : ss[1].trim();
+        if (aliasMap.containsKey(ss[0])) {
+            String[] sp = aliasMap.get(ss[0]).split(SPLIT, 2);
+            key = sp[0];
+            if (sp.length > 1) {
+                param = sp[1] + param;
             }
+        }
+        SocketCommand<?> command = commandMap.get(key);
+        if (command != null) {
+            command.run(client, param);
         } else if (defaultHandler != null) {
-            defaultHandler.receive(client, message);
+            defaultHandler.receive(client, message.trim());
         }
     }
 
@@ -78,6 +90,14 @@ public class CommandParser implements SocketHandler {
         for (String key : command.keys()) {
             commandMap.remove(key, command);
         }
+    }
+
+    public Map<String, String> getAliasMap() {
+        return aliasMap;
+    }
+
+    public void addAlias(String alias, String command) {
+        this.aliasMap.put(alias, command);
     }
 
     /**

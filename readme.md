@@ -110,7 +110,7 @@ Socket指令在使用时，可以加载`jar文件`，也可以加载`SocketComma
 >        <dependency>
 >            <groupId>com.github.Verlif</groupId>
 >            <artifactId>socket-command</artifactId>
->            <version>alpha-0.7</version>
+>            <version>alpha-0.7.1</version>
 >        </dependency>
 >    </dependencies>
 > ```
@@ -118,7 +118,7 @@ Socket指令在使用时，可以加载`jar文件`，也可以加载`SocketComma
 > Gradle
 > ```text
 > dependencies {
->   implementation 'com.github.Verlif:socket-command:alpha-0.7'
+>   implementation 'com.github.Verlif:socket-command:alpha-0.7.1'
 > }
 > ```
 
