@@ -2,6 +2,7 @@ package idea.verlif.socket.command.server;
 
 import idea.verlif.socket.command.SocketCommand;
 import idea.verlif.socket.command.impl.DefaultTip;
+import idea.verlif.socket.command.server.handle.InputMessageHandler;
 import idea.verlif.socket.core.server.SocketHandler;
 import idea.verlif.socket.core.server.holder.ClientHolder;
 
@@ -25,6 +26,11 @@ public class CommandParser implements SocketHandler {
      */
     private final Map<String, String> aliasMap;
 
+    /**
+     * 接受消息预处理
+     */
+    private InputMessageHandler messageHandler;
+
     public CommandParser() {
         this.commandMap = new HashMap<>();
         this.defaultHandler = new DefaultTip();
@@ -33,7 +39,11 @@ public class CommandParser implements SocketHandler {
 
     @Override
     public void receive(ClientHolder.ClientHandler client, String message) {
-        String[] ss = message.split(SPLIT, 2);
+        String content = messageHandler == null ? message : messageHandler.preHandle(client, message);
+        if (content == null) {
+            return;
+        }
+        String[] ss = content.split(SPLIT, 2);
         String key = ss[0];
         String param = ss.length == 1 ? "" : ss[1].trim();
         if (aliasMap.containsKey(ss[0])) {
@@ -47,7 +57,7 @@ public class CommandParser implements SocketHandler {
         if (command != null) {
             command.run(client, param);
         } else if (defaultHandler != null) {
-            defaultHandler.receive(client, message.trim());
+            defaultHandler.receive(client, content.trim());
         }
     }
 
@@ -98,6 +108,14 @@ public class CommandParser implements SocketHandler {
 
     public void addAlias(String alias, String command) {
         this.aliasMap.put(alias, command);
+    }
+
+    public InputMessageHandler getMessageHandler() {
+        return messageHandler;
+    }
+
+    public void setMessageHandler(InputMessageHandler messageHandler) {
+        this.messageHandler = messageHandler;
     }
 
     /**

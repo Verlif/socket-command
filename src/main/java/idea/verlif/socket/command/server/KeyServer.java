@@ -5,6 +5,7 @@ import idea.verlif.socket.core.server.SocketHandler;
 import idea.verlif.socket.core.server.holder.ClientHolder;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.Socket;
 import java.util.HashSet;
 import java.util.Set;
@@ -17,11 +18,26 @@ import java.util.Set;
 public class KeyServer extends CommandServer {
 
     private final Set<KeyCommand> commands;
+    private final ServerKeyHandler keyHandler;
 
     public KeyServer(CommandConfig config) {
         super(config);
 
         commands = new HashSet<>();
+
+        SocketHandler socketHandler = config.getHandler();
+        keyHandler = new ServerKeyHandler() {
+            @Override
+            public void defaultReceive(ClientHolder.ClientHandler client, String message) {
+                socketHandler.receive(client, message);
+            }
+
+            @Override
+            public void onRejected(Socket socket) throws IOException {
+                socketHandler.onRejected(socket);
+            }
+        };
+        config.setHandler(keyHandler);
     }
 
     /**
@@ -35,23 +51,18 @@ public class KeyServer extends CommandServer {
 
     @Override
     public void init() throws IOException {
-        SocketHandler socketHandler = config.getHandler();
-        ServerKeyHandler keyHandler = new ServerKeyHandler() {
-
-            @Override
-            public void defaultReceive(ClientHolder.ClientHandler client, String message) {
-                socketHandler.receive(client, message);
-            }
-
-            @Override
-            public void onRejected(Socket socket) throws IOException {
-                socketHandler.onRejected(socket);
-            }
-        };
         for (KeyCommand command : commands) {
             keyHandler.addCommand(command);
         }
-        config.setHandler(keyHandler);
         super.init();
+    }
+
+    @Override
+    public void reload() throws IOException, InvocationTargetException, InstantiationException, IllegalAccessException {
+        keyHandler.clearKeyCommand();
+        for (KeyCommand command : commands) {
+            keyHandler.addCommand(command);
+        }
+        super.reload();
     }
 }
