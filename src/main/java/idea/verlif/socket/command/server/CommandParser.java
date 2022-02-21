@@ -45,7 +45,7 @@ public class CommandParser implements SocketHandler {
         }
         String[] ss = content.split(SPLIT, 2);
         String key = ss[0];
-        String param = ss.length == 1 ? "" : ss[1].trim();
+        String param = ss.length == 1 ? "" : ss[1];
         if (aliasMap.containsKey(ss[0])) {
             String[] sp = aliasMap.get(ss[0]).split(SPLIT, 2);
             key = sp[0];

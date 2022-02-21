@@ -110,7 +110,7 @@ Socket指令在使用时，可以加载`jar文件`，也可以加载`SocketComma
 >        <dependency>
 >            <groupId>com.github.Verlif</groupId>
 >            <artifactId>socket-command</artifactId>
->            <version>alpha-0.8</version>
+>            <version>alpha-0.8.2</version>
 >        </dependency>
 >    </dependencies>
 > ```
@@ -118,7 +118,7 @@ Socket指令在使用时，可以加载`jar文件`，也可以加载`SocketComma
 > Gradle
 > ```text
 > dependencies {
->   implementation 'com.github.Verlif:socket-command:alpha-0.8'
+>   implementation 'com.github.Verlif:socket-command:alpha-0.8.2'
 > }
 > ```
 
@@ -219,6 +219,8 @@ plus 1 2
 ```text
 result = 3
 ```
+
+__注意：客户端输入的指令对格式要求严格，例如`plus`后面使用两个空格是不允许的；输入`PLUS`指令则不会进入`plus`指令__
 
 ------
 
