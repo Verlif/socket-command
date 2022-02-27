@@ -1,7 +1,7 @@
 # CommandSocket
 
 Socket指令交互组件  
-基于 [socket-core](https://github.com/socket-core) 与 [loader-jar](https://github.com/loader-jar) 的组合组件。
+基于 [socket-core](https://github.com/Verlif/socket-core) 与 [loader-jar](https://github.com/Verlif/loader-jar) 的组合组件。
 通过类似于加载模组的方式，通过加载jar文件的方式来加载指令，然后通过socket的方式来执行指令。
 
 * 一个服务端可以连接任意数量客户端
