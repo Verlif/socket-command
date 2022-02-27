@@ -8,6 +8,8 @@ import idea.verlif.socket.core.server.holder.ClientHolder;
  */
 public interface SocketCommand<T extends ConfigAdapter> {
 
+    String SPLIT = " ";
+
     /**
      * 指令Key
      *

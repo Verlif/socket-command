@@ -2,6 +2,8 @@ package idea.verlif.socket.command.server;
 
 import idea.verlif.loader.jar.config.FileFilter;
 import idea.verlif.socket.core.server.ServerConfig;
+import idea.verlif.socket.core.server.SocketHandler;
+import idea.verlif.socket.core.server.listener.ConnectedListener;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -55,6 +57,30 @@ public class CommandConfig extends ServerConfig {
     public CommandConfig filter(FileFilter filter) {
         this.fileFilter = filter;
         return this;
+    }
+
+    /**
+     * 设置连接处理器已被弃用，由内置的指令处理器接管。
+     *
+     * @param handler 连接监听器
+     * @deprecated 此方法已不会再生效
+     */
+    @Deprecated
+    @Override
+    public void setHandler(SocketHandler handler) {
+        super.setHandler(handler);
+    }
+
+    /**
+     * 设置连接监听器已被弃用，请使用{@linkplain CommandServer#addOnConnectedHandler(ConnectedListener) CommandServer.addOnConnectedHandler()}
+     *
+     * @param connectedListener 连接监听器
+     * @deprecated 请使用CommandServer下的addOnConnectedHandler方法
+     */
+    @Deprecated
+    @Override
+    public void setConnectedListener(ConnectedListener connectedListener) {
+        super.setConnectedListener(connectedListener);
     }
 
     @Override

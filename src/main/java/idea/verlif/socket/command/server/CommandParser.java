@@ -6,7 +6,6 @@ import idea.verlif.socket.command.server.handle.InputMessageHandler;
 import idea.verlif.socket.core.server.SocketHandler;
 import idea.verlif.socket.core.server.holder.ClientHolder;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -15,8 +14,6 @@ import java.util.Set;
  * @author Verlif
  */
 public class CommandParser implements SocketHandler {
-
-    private static final String SPLIT = " ";
 
     private SocketHandler defaultHandler;
     private final Map<String, SocketCommand<?>> commandMap;
@@ -43,11 +40,11 @@ public class CommandParser implements SocketHandler {
         if (content == null) {
             return;
         }
-        String[] ss = content.split(SPLIT, 2);
+        String[] ss = content.split(SocketCommand.SPLIT, 2);
         String key = ss[0];
         String param = ss.length == 1 ? "" : ss[1];
         if (aliasMap.containsKey(ss[0])) {
-            String[] sp = aliasMap.get(ss[0]).split(SPLIT, 2);
+            String[] sp = aliasMap.get(ss[0]).split(SocketCommand.SPLIT, 2);
             key = sp[0];
             if (sp.length > 1) {
                 param = sp[1] + param;

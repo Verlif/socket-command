@@ -32,6 +32,10 @@ public class CommandServer extends Server {
 
         parser = new CommandParser();
         check = new ConnectedListenerChainer();
+        ConnectedListener listener = config.getConnectedListener();
+        if (listener != null) {
+            check.addOnConnectedHandler(listener);
+        }
         config.handler(parser).connectListener(check);
 
         this.configService = new ConfigService();

@@ -1,5 +1,6 @@
 package idea.verlif.socket.command.client;
 
+import idea.verlif.socket.command.SocketCommand;
 import idea.verlif.socket.command.key.KeyCommand;
 import idea.verlif.socket.command.key.KeyHandler;
 import idea.verlif.socket.core.client.Client;
@@ -14,7 +15,7 @@ public abstract class ClientKeyHandler extends KeyHandler implements ReceiveHand
 
     @Override
     public void receive(Client client, String s) {
-        String[] split = s.split(" ", 2);
+        String[] split = s.split(SocketCommand.SPLIT, 2);
         KeyCommand command = getCommand(split[0]);
         if (command == null) {
             defaultReceive(client, s);
