@@ -30,13 +30,14 @@ public class CommandServer extends Server {
         super(config);
         this.config = config;
 
-        parser = new CommandParser();
-        check = new ConnectedListenerChainer();
-        ConnectedListener listener = config.getConnectedListener();
+        this.parser = new CommandParser();
+        this.check = new ConnectedListenerChainer();
+        ConnectedListener listener = connectedListener;
         if (listener != null) {
             check.addOnConnectedHandler(listener);
         }
-        config.handler(parser).connectListener(check);
+        this.handler = parser;
+        this.connectedListener = check;
 
         this.configService = new ConfigService();
     }

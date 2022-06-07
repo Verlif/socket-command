@@ -29,6 +29,8 @@ Socket指令在使用时，可以加载`jar文件`，也可以加载`SocketComma
     server.removeCommand("plus");
     // 重新加载指令集路径中的所有指令包
     server.reload();
+    // 添加指令别名，这里客户端输入“ping”时，相当于输入了“cmd ping 127.0.0.1”
+    server.getParser().addAlias("ping", "cmd ping 127.0.0.1");
 ```
 
 ------
@@ -81,46 +83,52 @@ Socket指令在使用时，可以加载`jar文件`，也可以加载`SocketComma
 
 ## 添加
 
-1. 添加Jitpack仓库源
+### 添加Jitpack仓库源
 
-> maven
-> ```xml
-> <repositories>
->    <repository>
->        <id>jitpack.io</id>
->        <url>https://jitpack.io</url>
->    </repository>
-> </repositories>
-> ```
+[![Release](https://jitpack.io/v/Verlif/socket-command.svg)](https://jitpack.io/#Verlif/socket-command)
 
-> Gradle
-> ```text
-> allprojects {
->   repositories {
->       maven { url 'https://jitpack.io' }
->   }
-> }
-> ```
+#### maven
 
-2. 添加依赖
+```xml
+<repositories>
+   <repository>
+       <id>jitpack.io</id>
+       <url>https://jitpack.io</url>
+   </repository>
+</repositories>
+```
 
-> maven
-> ```xml
->    <dependencies>
->        <dependency>
->            <groupId>com.github.Verlif</groupId>
->            <artifactId>socket-command</artifactId>
->            <version>alpha-0.8.3</version>
->        </dependency>
->    </dependencies>
-> ```
+#### Gradle
 
-> Gradle
-> ```text
-> dependencies {
->   implementation 'com.github.Verlif:socket-command:alpha-0.8.3'
-> }
-> ```
+```text
+allprojects {
+  repositories {
+      maven { url 'https://jitpack.io' }
+  }
+}
+```
+
+### 添加依赖
+
+#### maven
+
+```xml
+   <dependencies>
+       <dependency>
+           <groupId>com.github.Verlif</groupId>
+           <artifactId>socket-command</artifactId>
+           <version>last-version</version>
+       </dependency>
+   </dependencies>
+```
+
+#### Gradle
+
+```text
+dependencies {
+  implementation 'com.github.Verlif:socket-command:last-version'
+}
+```
 
 ------
 

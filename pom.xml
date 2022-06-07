@@ -6,7 +6,7 @@
 
     <groupId>idea.verlif</groupId>
     <artifactId>socket-socketCommand</artifactId>
-    <version>alpha-0.8.3</version>
+    <version>alpha-0.8.4</version>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -18,7 +18,7 @@
         <dependency>
             <groupId>com.github.Verlif</groupId>
             <artifactId>socket-core</artifactId>
-            <version>0.5.2</version>
+            <version>0.6.2</version>
         </dependency>
         <!-- Jar加载器 -->
         <dependency>
@@ -29,18 +29,13 @@
         <!-- Jackson -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
-            <version>2.13.1</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.13.1</version>
+            <version>2.13.3</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
-            <version>2.13.1</version>
+            <version>2.13.3</version>
         </dependency>
     </dependencies>
 

@@ -25,19 +25,27 @@ public class KeyServer extends CommandServer {
 
         commands = new HashSet<>();
 
-        SocketHandler socketHandler = config.getHandler();
+        SocketHandler sh = handler;
         keyHandler = new ServerKeyHandler() {
             @Override
             public void defaultReceive(ClientHolder.ClientHandler client, String message) {
-                socketHandler.receive(client, message);
+                sh.receive(client, message);
             }
 
             @Override
             public void onRejected(Socket socket) throws IOException {
-                socketHandler.onRejected(socket);
+                sh.onRejected(socket);
             }
         };
-        config.setHandler(keyHandler);
+        handler = keyHandler;
+    }
+
+    /**
+     * @deprecated setHandler已被弃用
+     * @param handler 连接管理器
+     */
+    @Override
+    public void setHandler(SocketHandler handler) {
     }
 
     /**

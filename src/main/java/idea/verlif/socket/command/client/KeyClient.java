@@ -36,18 +36,18 @@ public class KeyClient extends Client {
 
     @Override
     public boolean connect() {
-        ReceiveHandler handler = config.getReceiveHandler();
+        ReceiveHandler rh = this.receiveHandler;
         ClientKeyHandler innerHandler = new ClientKeyHandler() {
 
             @Override
             public void defaultReceive(Client client, String message) {
-                handler.receive(client, message);
+                rh.receive(client, message);
             }
         };
         for (KeyCommand command : commands) {
             innerHandler.addCommand(command);
         }
-        config.setReceiveHandler(innerHandler);
+        this.receiveHandler = innerHandler;
         return super.connect();
     }
 }

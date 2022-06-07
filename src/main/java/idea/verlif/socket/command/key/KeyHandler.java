@@ -3,8 +3,6 @@ package idea.verlif.socket.command.key;
 import java.util.HashMap;
 import java.util.Map;
 
-import static idea.verlif.socket.command.key.KeyCommand.COMMAND_PREFIX;
-
 /**
  * @author Verlif
  * @version 1.0
